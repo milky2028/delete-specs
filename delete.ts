@@ -2,19 +2,19 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-const isDirectory = async (path: string): Promise<boolean> => {
+async function isDirectory(path: string): Promise<boolean> {
   const getFileDetails = promisify(fs.lstat);
   const details = await getFileDetails(path);
   return details.isDirectory();
-};
+}
 
-const isFile = async (path: string): Promise<boolean> => {
+async function isFile(path: string): Promise<boolean> {
   const getFileDetails = promisify(fs.lstat);
   const details = await getFileDetails(path);
   return details.isFile();
-};
+}
 
-const getFilePaths = async (folderPath: string, rootFolderPath: string): Promise<any> => {
+async function getFilePaths(folderPath: string, rootFolderPath: string): Promise<any> {
   const readAsync = promisify(fs.readdir);
   const fullPath = path.join(rootFolderPath, folderPath);
   if (await isFile(fullPath)) {
@@ -27,9 +27,9 @@ const getFilePaths = async (folderPath: string, rootFolderPath: string): Promise
         .map((deepPaths: string) => getFilePaths(deepPaths, fullPath))
     );
   }
-};
+}
 
-const main = async (folderPath: string) => {
+async function main(folderPath: string) {
   console.log('Searching for files to delete...');
   const paths = await getFilePaths(folderPath, '');
   const specRegex = /\.spec\.ts$/i;
@@ -41,7 +41,7 @@ const main = async (folderPath: string) => {
   });
 
   return filesToDelete.length;
-};
+}
 
 const folderPassedAsArgument = process.argv[2];
 main(folderPassedAsArgument)
