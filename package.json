@@ -1,0 +1,17 @@
+{
+  "name": "deletefiles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "delete.js",
+  "scripts": {
+    "main": "node dist/delete.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.6.8",
+    "eslint": "^6.1.0",
+    "typescript": "^3.5.3"
+  }
+}
