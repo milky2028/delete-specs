@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { promisify, isArray } from 'util';
+import { promisify } from 'util';
 
 interface StatsWithIndex extends fs.Stats {
   [key: string]: any;
@@ -41,7 +41,7 @@ async function main(folderPath: string) {
   console.log('Searching for files to delete...');
   const paths = await getFilePaths(folderPath, '');
   const specRegex = /\.spec\.ts$/i;
-  if (isArray(paths)) {
+  if (Array.isArray(paths)) {
     const filesToDelete = paths.flat(Infinity).filter((path: string) => specRegex.test(path));
     filesToDelete.forEach((file: string) => {
       const deleteFileAsync = promisify(fs.unlink);
