@@ -2,24 +2,22 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-async function isDirectory(path: string): Promise<boolean> {
-  const getFileDetails = promisify(fs.lstat);
-  const details = await getFileDetails(path);
-  return details.isDirectory();
+interface StatsWithIndex extends fs.Stats {
+  [key: string]: any;
 }
 
-async function isFile(path: string): Promise<boolean> {
+async function isFileOrDirectory(path: string, type: 'isFile' | 'isDirectory'): Promise<boolean> {
   const getFileDetails = promisify(fs.lstat);
-  const details = await getFileDetails(path);
-  return details.isFile();
+  const details: StatsWithIndex = await getFileDetails(path);
+  return details[type]();
 }
 
 async function getFilePaths(folderPath: string, rootFolderPath: string): Promise<any> {
   const readAsync = promisify(fs.readdir);
   const fullPath = path.join(rootFolderPath, folderPath);
-  if (await isFile(fullPath)) {
+  if (await isFileOrDirectory(fullPath, 'isFile')) {
     return fullPath;
-  } else if (await isDirectory(fullPath)) {
+  } else if (await isFileOrDirectory(fullPath, 'isDirectory')) {
     const nestedPaths = await readAsync(fullPath);
     return Promise.all(
       nestedPaths
